@@ -26,4 +26,9 @@ public class ItemController {
     public ShopItem create(@Validated @RequestBody ShopItemDto item){
         return itemService.create(ConvertShopItem.dtoToShopItem(item));
     }
+
+    @DeleteMapping("/{id}")
+    public List<ShopItem> delete(@PathVariable Long id){
+        return itemService.delete(id);
+    }
 }

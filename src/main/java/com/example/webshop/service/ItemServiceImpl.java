@@ -18,7 +18,16 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
+    public ShopItem findById(Long id){return itemRepository.findById(id).orElse(null);}
+
+    @Override
     public ShopItem create(ShopItem item){
         return itemRepository.save(item);
+    }
+
+    @Override
+    public List<ShopItem> delete(Long id){
+        itemRepository.deleteById(id);
+        return itemRepository.findAll();
     }
 }

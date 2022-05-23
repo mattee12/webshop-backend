@@ -1,6 +1,7 @@
 package com.example.webshop.service;
 
 import com.example.webshop.entity.Auth;
+import com.example.webshop.entity.Cart;
 import com.example.webshop.entity.User;
 import com.example.webshop.repository.AuthRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,9 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public Auth register(Auth auth){
         User user = new User();
+        Cart cart = new Cart();
         user.setEmail(auth.getEmail());
+        user.setCart(cart);
         auth.setUser(user);
 
         SecureRandom random = new SecureRandom();
@@ -31,7 +34,7 @@ public class AuthServiceImpl implements AuthService{
 
         byte[] token = new byte[64];
         random.nextBytes(token);
-        auth.setToken(Base64Utils.encodeToString(token));
+        auth.setToken(Base64Utils.encodeToUrlSafeString(token));
 
         auth.setPassword(hashString(auth.getPassword(), salt));
         return filterSensitive(authRepository.save(auth));

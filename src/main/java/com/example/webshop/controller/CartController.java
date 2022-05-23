@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @RestController
@@ -25,24 +26,24 @@ public class CartController {
     private final AuthService authService;
     private final CartService cartService;
 
-    @GetMapping("/{token}")
-    public Cart getCart(@PathVariable @ValidToken String token){
+    @GetMapping("/")
+    public Cart getCart(@RequestHeader("access-token") @NotBlank(message = "Token is mandatory.") @ValidToken String token){
         final Auth resultAuth = authService.validateToken(token);
         if(resultAuth == null){return null;}
         return resultAuth.getUser().getCart();
     }
 
-    @PostMapping("/{token}/{id}")
+    @PostMapping("/{id}")
     public Cart addItem(
-            @PathVariable @ValidToken(message = "This token is invalid.") String token,
+            @RequestHeader("access-token") @NotBlank(message = "Token is mandatory") @ValidToken(message = "This token is invalid.") String token,
             @PathVariable @NotNull(message = "Item ID is mandatory.") Long id){
         final User user = authService.validateToken(token).getUser();
         return cartService.addItem(user.getCart(), id);
     }
 
-    @DeleteMapping("/{token}/{id}")
+    @DeleteMapping("/{id}")
     public Cart deleteItem(
-            @PathVariable @ValidToken String token,
+            @RequestHeader("access-token") @NotBlank(message = "Token is mandatory.") @ValidToken String token,
             @PathVariable @NotNull Long id
     ){
         ShopItem toDelete = new ShopItem();

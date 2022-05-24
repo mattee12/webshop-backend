@@ -14,9 +14,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@CrossOrigin
+@CrossOrigin(originPatterns = {"http://localhost:[*]"}, allowCredentials = "true")
 @RestController
-@RequestMapping("/item")
+@RequestMapping(value = "/item")
 @RequiredArgsConstructor
 @Validated
 public class ItemController {
@@ -29,14 +29,14 @@ public class ItemController {
 
     @PostMapping
     public ShopItem create(
-            @RequestHeader("access-token") @NotBlank(message = "Token is mandatory.") @RequiredRole(role = Role.ADMIN) String token,
+            @CookieValue("access-token") @NotBlank(message = "Token is mandatory.") @RequiredRole(role = Role.ADMIN) String token,
             @RequestBody ShopItemDto item){
         return itemService.create(ConvertShopItem.dtoToShopItem(item));
     }
 
     @DeleteMapping("/{id}")
     public List<ShopItem> delete(
-            @RequestHeader("access-token") @NotBlank(message = "Token is mandatory.") @RequiredRole(role = Role.ADMIN) String token,
+            @CookieValue("access-token") @NotBlank(message = "Token is mandatory.") @RequiredRole(role = Role.ADMIN) String token,
             @PathVariable @NotNull(message = "Item ID is mandatory.") Long id){
         return itemService.delete(id);
     }

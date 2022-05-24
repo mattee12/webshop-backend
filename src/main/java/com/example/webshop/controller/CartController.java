@@ -21,13 +21,13 @@ import javax.validation.constraints.NotNull;
 @RequestMapping("/cart")
 @RequiredArgsConstructor
 @Validated
-@CrossOrigin
+@CrossOrigin(originPatterns = "http://localhost:[*]", allowCredentials = "true")
 public class CartController {
     private final AuthService authService;
     private final CartService cartService;
 
     @GetMapping("/")
-    public Cart getCart(@RequestHeader("access-token") @NotBlank(message = "Token is mandatory.") @ValidToken String token){
+    public Cart getCart(@CookieValue("access-token") @NotBlank(message = "Token is mandatory.") @ValidToken String token){
         final Auth resultAuth = authService.validateToken(token);
         if(resultAuth == null){return null;}
         return resultAuth.getUser().getCart();
@@ -35,7 +35,7 @@ public class CartController {
 
     @PostMapping("/{id}")
     public Cart addItem(
-            @RequestHeader("access-token") @NotBlank(message = "Token is mandatory") @ValidToken(message = "This token is invalid.") String token,
+            @CookieValue("access-token") @NotBlank(message = "Token is mandatory") @ValidToken(message = "This token is invalid.") String token,
             @PathVariable @NotNull(message = "Item ID is mandatory.") Long id){
         final User user = authService.validateToken(token).getUser();
         return cartService.addItem(user.getCart(), id);
@@ -43,7 +43,7 @@ public class CartController {
 
     @DeleteMapping("/{id}")
     public Cart deleteItem(
-            @RequestHeader("access-token") @NotBlank(message = "Token is mandatory.") @ValidToken String token,
+            @CookieValue("access-token") @NotBlank(message = "Token is mandatory.") @ValidToken String token,
             @PathVariable @NotNull Long id
     ){
         ShopItem toDelete = new ShopItem();

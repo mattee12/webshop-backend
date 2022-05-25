@@ -23,7 +23,6 @@ public class StringLengthValidator implements ConstraintValidator<StringLength, 
         }
         final int stringLength = value.length();
         final boolean result = isMin(stringLength) && isMax(stringLength) && isLength(stringLength);
-        System.out.println(result + ": min = " + this.min + ", max = " + this.max + ", length = " + this.length + ", value = " + value);
         return result;
     }
 

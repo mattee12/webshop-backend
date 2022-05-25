@@ -30,7 +30,7 @@ public class ItemController {
     @PostMapping
     public ShopItem create(
             @CookieValue("access-token") @NotBlank(message = "Token is mandatory.") @RequiredRole(role = Role.ADMIN) String token,
-            @RequestBody ShopItemDto item){
+            @Validated @RequestBody ShopItemDto item){
         return itemService.create(ConvertShopItem.dtoToShopItem(item));
     }
 
